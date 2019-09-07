@@ -34,14 +34,14 @@ python main.py
 ```
 
 ### 配置
-##### 使用非Chrome,配置webdriver
+#### 使用非Chrome,配置webdriver
 在 main.py 文件中可根据需求 自行修改代码
 ```python
 # 可根据需求更换webdriver,如IE,Edge,Firefox等
 browser = webdriver.Chrome()
 ```
-##### 资源初始配置
-###### 通过 config.ini
+#### 资源初始配置
+##### 通过 config.ini
 在 config.ini 文件中 直接配置
 ```ini
 [website]
