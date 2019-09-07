@@ -30,8 +30,9 @@ class LibSheet:
                 for j, item in enumerate(sheet.row_values(i)):
                     row_dict[opts[k][j]] = item
                 self.lib[k].append(row_dict)
-    def __replace(self,text):
-        return re.sub(r'[（(]\s*[）)]','',text)
+
+    def __replace(self, text):
+        return re.sub(r'[（(]\s*[）)]', '', text)
 
     def search(self, quiz_index, quiz_text):
         quiz_text = self.__replace(quiz_text)

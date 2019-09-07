@@ -6,6 +6,16 @@ class ExamRobot:
         self.lib_sheet = lib_sheet
         self.browser = browser
 
+    def remove_blur_cover(self):
+        try:
+            cover = self.browser.find_element_by_css_selector(
+                '.g-i-w-container')
+            self.browser.execute_script(
+                'window.WindowBlurDetector.turnOFF;window.WindowBlurDetector.turnON = () => {};')
+            print('remove blur_cover succeed')
+        except Exception:
+            print('remove blur_cover exception')
+
     def fill_captcha(self):
         try:
             annotation = self.browser.find_element_by_css_selector(
@@ -16,20 +26,14 @@ class ExamRobot:
             if 'int' in text:
                 re_sult = re.search(
                     r'\\int_{(\d+)}\^{(\d+)}\((\d+)x\^2\+(\d+)x\+(\d+)\)dx=\?', text)
-                a = int(re_sult.group(1))
-                b = int(re_sult.group(2))
-                k3 = int(re_sult.group(3)) / 3
-                k2 = int(re_sult.group(4)) / 2
-                k1 = int(re_sult.group(5))
+                a, b, k3, k2, k1 = [int(k) for k in re_sult.groups()]
+                k3, k2 = k3/3, k2/2
                 result = int(k3 * (b ** 3 - a ** 3) + k2 *
                              (b ** 2 - a ** 2) + k1 * (b - a))
             else:
                 re_sult = re.search(
                     r'(\d+)\\times(\d+)\+(\d+)\-(\d+)=\?', text)
-                a = int(re_sult.group(1))
-                k1 = int(re_sult.group(2))
-                k2 = int(re_sult.group(3))
-                k3 = int(re_sult.group(4))
+                a, k1, k2, k3 = [int(k) for k in re_sult.groups()]
                 result = int(a * k1 + k2 - k3)
             print('result', result)
             inputer = self.browser.find_element_by_css_selector(
@@ -43,10 +47,8 @@ class ExamRobot:
             quizs = self.browser.find_elements_by_css_selector(
                 '.exam-content-quiz')
             for quiz in quizs:
-                text = quiz.find_element_by_css_selector('div').text
+                text = quiz.find_element_by_css_selector('p').text
                 quiz_text = re.search(r'\d+\.(.+)', text).group(1)
-                if '\n' in quiz_text:
-                    quiz_text.replace('\n', '')
                 inputs = quiz.find_elements_by_css_selector('input')
                 quiz_index = 0 if inputs[0].get_attribute(
                     'type') == 'radio' else 1
