@@ -12,14 +12,13 @@ print('program is launching ...')
 # read user-config from ini 
 config = cp.ConfigParser()
 config.read('config.ini')
-print('loading user-config ...')
+
 website_url = config.get('website','url')
 excel_path = config.get('excel','path')
 print('website_url',website_url)
 print('sheet_path',excel_path)
 
 # load main unit
-print('loading main unit ...')
 browser = webdriver.Chrome()
 lib_sheet = LibSheet(excel_path)
 robot = ExamRobot(lib_sheet, browser)
