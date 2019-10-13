@@ -1,5 +1,5 @@
 import re
-
+from random import choice, choices
 
 class ExamRobot:
     def __init__(self, lib_sheet, browser):
@@ -15,6 +15,10 @@ class ExamRobot:
             print('remove blur_cover succeed')
         except Exception:
             print('remove blur_cover exception')
+
+    def __choice_option(self, target):
+        self.browser.execute_script(
+            'arguments[0].click();', target)
 
     def fill_captcha(self):
         try:
@@ -43,8 +47,9 @@ class ExamRobot:
         except Exception:
             print('captcha fill exception')
 
-    def fill_questions(self):
+    def fill_questions(self, option):
         try:
+            score = 0
             quizs = self.browser.find_elements_by_css_selector(
                 '.exam-content-quiz')
             for quiz in quizs:
@@ -54,11 +59,27 @@ class ExamRobot:
                 quiz_index = 0 if inputs[0].get_attribute(
                     'type') == 'radio' else 1
                 keys = self.lib_sheet.search(quiz_index, quiz_text)
+                if option == 'test':
+                    if quiz_index is 0:
+                        ainput = choice(inputs)
+                        self.__choice_option(ainput)
+                        score += 1 if ainput.get_attribute(
+                            'value') in keys else 0
+                    else:
+                        sinput = choices(inputs)
+                        s_arr = []
+                        for ainput in sinput:
+                            self.__choice_option(ainput)
+                            s_arr.append(ainput.get_attribute('value'))
+                        s_arr.sort()
+                        score += 2 if ''.join(s_arr) == keys else 0
+                else:
+                    for ainput in inputs:
+                        if ainput.get_attribute('value') in keys:
+                            self.__choice_option(ainput)
                 print(text)
                 print(keys)
-                for ainput in inputs:
-                    if ainput.get_attribute('value') in keys:
-                        self.browser.execute_script(
-                            'arguments[0].click();', ainput)
+            if option == 'test':
+                print('final score:{}'.format(score))
         except Exception:
             print('questions fill exception')

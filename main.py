@@ -40,6 +40,7 @@ def show_help():
   fill    Autofill the question of target exam 
     --questions     Fill questions
     --captcha       Fill CAPTCHA
+    --test          Fill questions for test prupose
   quit    Quit this program
   search  Search a question
     --radio <question>     Search a radio question
@@ -82,10 +83,10 @@ def lines():
     elif command == 'fill':
         if option == 'captcha':
             robot.fill_captcha()
-        elif option == 'questions' or option == '':
-            robot.fill_questions()
-        elif option == 'all':
-            robot.fill_questions()
+        elif option == 'questions':
+            robot.fill_questions(option)
+        elif option == 'all' or option == 'test':
+            robot.fill_questions(option)
             robot.fill_captcha()
         else:
             print('undefined option')
