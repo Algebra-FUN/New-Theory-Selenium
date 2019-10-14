@@ -1,5 +1,6 @@
 import re
-from random import choice, choices
+from random import choice, shuffle, randint
+
 
 class ExamRobot:
     def __init__(self, lib_sheet, browser):
@@ -60,25 +61,31 @@ class ExamRobot:
                     'type') == 'radio' else 1
                 keys = self.lib_sheet.search(quiz_index, quiz_text)
                 if option == 'test':
+                    selected = ''
                     if quiz_index is 0:
                         ainput = choice(inputs)
                         self.__choice_option(ainput)
-                        score += 1 if ainput.get_attribute(
-                            'value') in keys else 0
+                        selected = ainput.get_attribute(
+                            'value')
+                        score += 1 if selected in keys else 0
                     else:
-                        sinput = choices(inputs)
+                        shuffle(inputs)
+                        sinput = inputs[:randint(0, len(inputs))]
                         s_arr = []
                         for ainput in sinput:
                             self.__choice_option(ainput)
                             s_arr.append(ainput.get_attribute('value'))
                         s_arr.sort()
-                        score += 2 if ''.join(s_arr) == keys else 0
+                        selected = ''.join(s_arr)
+                        score += 2 if selected == keys else 0
+                    print(text)
+                    print('selected:{},key:{},current-score:{}'.format(selected,keys,score))
                 else:
                     for ainput in inputs:
                         if ainput.get_attribute('value') in keys:
                             self.__choice_option(ainput)
-                print(text)
-                print(keys)
+                    print(text)
+                    print(keys)
             if option == 'test':
                 print('final score:{}'.format(score))
         except Exception:
