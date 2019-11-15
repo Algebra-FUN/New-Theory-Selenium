@@ -17,10 +17,12 @@ python3 version>=3.5
 
 ##### STEP 1: 安装模组
 
+通过命令行
 ```shell
 pip install selenium
 pip install xlrd
 ```
+或点击“install.bat”
 
 ##### STEP 2: 安装webdriver
 
@@ -29,9 +31,11 @@ pip install xlrd
 
 ##### STEP 3: 启动
 
+通过命令行
 ```shell
 python main.py
 ```
+或点击“launch.bat”直接启动
 
 ### 配置
 #### 使用非Chrome,配置webdriver

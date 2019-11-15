@@ -9,14 +9,14 @@ website_url = 'localhost:8000'
 excel_path = './lib_sheet.xls'
 print('program is launching ...')
 
-# read user-config from ini 
+# read user-config from ini
 config = cp.ConfigParser()
 config.read('config.ini')
 
-website_url = config.get('website','url')
-excel_path = config.get('excel','path')
-print('website_url',website_url)
-print('sheet_path',excel_path)
+website_url = config.get('website', 'url')
+excel_path = config.get('excel', 'path')
+print('website_url', website_url)
+print('sheet_path', excel_path)
 
 # load main unit
 browser = webdriver.Chrome()
@@ -50,6 +50,8 @@ def show_help():
     --website_url <url>    Reset url of target website''')
 
 # command lines process
+
+
 def lines():
     result = re.search(r'(\S+)\s?-{0,2}(\S*)\s?(.*)', input('command> '))
     command, option, param = result.groups()
@@ -61,13 +63,13 @@ def lines():
     elif command == 'reset':
         if option == 'sheet_path':
             if lib_sheet.reload(param):
-                config.set('excel','path',param)
-                config.write(open('config.ini','r+'))
+                config.set('excel', 'path', param)
+                config.write(open('config.ini', 'r+'))
                 print('reset successed')
         elif option == 'website_url':
             if go(param):
-                config.set('website','url',param)
-                config.write(open('config.ini','r+'))
+                config.set('website', 'url', param)
+                config.write(open('config.ini', 'r+'))
                 print('reset successed')
                 browser.get(param)
         else:
@@ -98,6 +100,7 @@ def lines():
     else:
         print('undefined command')
     return True
+
 
 # main process launch
 go(website_url)
