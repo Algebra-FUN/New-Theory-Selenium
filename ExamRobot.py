@@ -36,7 +36,6 @@ class ExamRobot:
             inputer = self.browser.find_element_by_css_selector(
                 '.captcha-container > div:last-child > input')
             inputer.send_keys(str(result))
-            inputer.
         except Exception:
             print('captcha fill exception')
 
