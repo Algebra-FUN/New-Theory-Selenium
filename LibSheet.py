@@ -32,7 +32,7 @@ class LibSheet:
                 self.lib[k].append(row_dict)
 
     def __replace(self, text):
-        return re.sub(r'[（(]\s*[）)]', '', text)
+        return re.sub(r'[（(）),.，。、\s\t\0\r\n]', '', text)
 
     def search(self, quiz_index, quiz_text):
         quiz_text = self.__replace(quiz_text)

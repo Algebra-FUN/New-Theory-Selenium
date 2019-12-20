@@ -102,8 +102,10 @@ def lines():
     return True
 
 
-# main process launch
+# main process
+#  launch
 go(website_url)
+browser.execute_script('window.hideMask()')
 browser.maximize_window()
 show_help()
 while lines():
