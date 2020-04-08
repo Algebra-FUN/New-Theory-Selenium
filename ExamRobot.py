@@ -2,6 +2,7 @@ import re
 from random import choice, shuffle, randint
 import time
 
+
 class ExamRobot:
     def __init__(self, lib_sheet, browser):
         self.lib_sheet = lib_sheet
@@ -29,13 +30,13 @@ class ExamRobot:
         except Exception:
             print('captcha fill exception')
 
-    def fill_questions(self, option):
+    def fill_questions(self):
         try:
             score = 0
-            quizs = self.browser.find_elements_by_css_selector(
+            quizzes = self.browser.find_elements_by_css_selector(
                 '.exam-content-quiz')
-            for quiz in quizs:
-                time.sleep(randint(10,20))
+            for quiz in quizzes:
+                time.sleep(randint(10, 20))
                 text = quiz.find_element_by_css_selector('p').text
                 quiz_text = re.search(r'\d+\.(.+)', text).group(1)
                 inputs = quiz.find_elements_by_css_selector('input')

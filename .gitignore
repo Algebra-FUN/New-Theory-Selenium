@@ -1,6 +1,9 @@
 /__pycache__
 debug.log
 test.py
-38.xls
-39.xlsx
+*xls*
+./venv
 .vscode
+customer.txt
+finished.txt
+unfinished.txt

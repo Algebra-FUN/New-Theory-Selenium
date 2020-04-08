@@ -1,107 +1,80 @@
 from selenium import webdriver
-
+from selenium.webdriver.common.keys import Keys
 from LibSheet import LibSheet
 from ExamRobot import ExamRobot
-import re
 import configparser as cp
-
-# default config
-website_url = 'localhost:8000'
-excel_path = './lib_sheet.xls'
-print('program is launching ...')
+import time
+import re
+import threading
 
 # read user-config from ini
 config = cp.ConfigParser()
 config.read('config.ini')
-
 website_url = config.get('website', 'url')
 excel_path = config.get('excel', 'path')
-print('website_url', website_url)
-print('sheet_path', excel_path)
-
-# load main unit
-browser = webdriver.Chrome()
-lib_sheet = LibSheet(excel_path)
-robot = ExamRobot(lib_sheet, browser)
 
 
-def go(url):
+def process_file(path):
+    regex = r'3[\d]1[6,7,8,9]\d{6}'
+    with open(path, 'r') as f:
+        rawData = f.read()
+    dict_list = []
+    passwordList = re.split(regex, rawData)
+    print(passwordList)
+    for i, match in enumerate(re.finditer(regex, rawData)):
+        new_dict = {}
+        username = match.group(0).strip()
+        password = passwordList[i + 1].strip()
+        if password == '':
+            password = 'nhce111'
+        new_dict.setdefault('username', username)
+        new_dict.setdefault('password', password)
+        dict_list.append(new_dict)
+    print(dict_list)
+    print(len(dict_list))
+    return dict_list
+
+
+def go(browser, url, username, password):
+    browser.get(url)
+    browser.implicitly_wait(5)
+    browser.execute_script('window.hideMask()')
+    browser.maximize_window()
+    browser.find_element_by_xpath('//*[@id="root"]/div/div[3]/div/span[1]').click()
+    browser.find_element_by_xpath('//*[@id="login-app"]/div/div/form/fieldset[1]/input').send_keys(username)
+    browser.find_element_by_name('password').send_keys(password)
+    browser.find_element_by_name('password').send_keys(Keys.RETURN)
+    browser.find_element_by_xpath('//*[@id="root"]/div/div[4]/div/div[2]/div/div[2]/table/tbody/tr[3]/td[2]').click()
+    time.sleep(2)
+    browser.find_element_by_xpath('//*[@id="root"]/div/div[2]/div/div[2]/div[1]').click()
+
+
+def core_process(username, password):
+    # load main unit
+    browser = webdriver.Chrome()
+    lib_sheet = LibSheet(excel_path)
+    robot = ExamRobot(lib_sheet, browser)
     try:
-        browser.get(url)
-        return True
-    except Exception:
-        print('browser get exception')
-        print('website_url need protocol part(http/https)')
-        return False
-
-
-def show_help():
-    print('''Here are all of commands:
-  help    Show the introduction of commands
-  fill    Autofill the question of target exam 
-    --questions     Fill questions
-    --captcha       Fill CAPTCHA
-    --test          Fill questions for test prupose
-  quit    Quit this program
-  search  Search a question
-    --all <question>
-  reset   Reset setting
-    --sheet_path <path>    Reset path of excel file temporarily
-    --website_url <url>    Reset url of target website''')
-
-# command lines process
-
-
-def lines():
-    result = re.search(r'(\S+)\s?-{0,2}(\S*)\s?(.*)', input('command> '))
-    command, option, param = result.groups()
-    if command == 'quit':
-        print('Program shut down')
-        return False
-    if command == 'help':
-        show_help()
-    elif command == 'reset':
-        if option == 'sheet_path':
-            if lib_sheet.reload(param):
-                config.set('excel', 'path', param)
-                config.write(open('config.ini', 'r+'))
-                print('reset successed')
-        elif option == 'website_url':
-            if go(param):
-                config.set('website', 'url', param)
-                config.write(open('config.ini', 'r+'))
-                print('reset successed')
-                browser.get(param)
-        else:
-            print('undefined option')
-    elif command == 'search':
-        print(lib_sheet.search(param))
-    elif command == 'fill':
-        if option == 'captcha':
-            robot.fill_captcha()
-        elif option == 'questions':
-            robot.fill_questions(option)
-        elif option == 'all' or option == 'test':
-            robot.fill_questions(option)
-            robot.fill_captcha()
-        else:
-            print('undefined option')
-    elif command == 'remove':
-        if option == 'blur_cover':
-            robot.remove_blur_cover()
-        else:
-            print('undefined option')
-    else:
-        print('undefined command')
-    return True
+        go(browser, website_url, username, password)
+        robot.fill_questions()
+        robot.fill_captcha()
+        browser.find_element_by_xpath('//*[@id="root"]/div/div[4]/div/div[3]/div[2]/p/span[1]').click()
+        time.sleep(2)
+        browser.find_element_by_xpath('//*[@id="root"]/div/div[2]/div/div[2]/div[1]').click()
+        with open('finished.txt', 'a') as f:
+            f.write('username: %s, password: %s finished\n' %
+                    (consumer_dict.get('username'), consumer_dict.get('password')))
+    except:
+        with open('unfinished.txt', 'a') as f:
+            f.write(consumer_dict.get('username') +
+                    ' ' + consumer_dict.get('password') + '\n')
+    finally:
+        browser.quit()
 
 
 # main process
 #  launch
-go(website_url)
-browser.execute_script('window.hideMask()')
-browser.maximize_window()
-show_help()
-while lines():
-    pass
-browser.quit()
+if __name__ == '__main__':
+    for consumer_dict in process_file('customer.txt'):
+        threading.Thread(target=core_process, args=(consumer_dict.get('username'),
+                                                    consumer_dict.get('password'))).start()
