@@ -1,9 +1,11 @@
 import xlrd
 import re
 
+opt_const = 'FEDCBA'
+
 opts = [
-    ['text', 'A', 'B', 'C', 'D', 'key'],
-    ['text', 'A', 'B', 'C', 'D', 'E', 'F', 'key']
+    ['topic', 'A', 'B', 'C', 'D', 'E', 'F', 'ans'],
+    ['topic', 'A', 'B', 'C', 'D', 'E', 'F', 'ans']
 ]
 
 
@@ -12,31 +14,43 @@ class LibSheet:
         self.reload(url)
 
     def reload(self, url):
-        try:
-            self.sheets = xlrd.open_workbook(url).sheets()
-            self.lib = []
-            self.__parse_to_dict()
-            return True
-        except Exception:
-            print('file load exception')
-            return False
+        # try:
+        self.sheets = xlrd.open_workbook(url).sheets()
+        self.lib = []
+        self.__parse_to_dict()
+        return True
+        # except Exception:
+        #     print('file load exception')
+        #     return False
 
     def __parse_to_dict(self):
         for k, opt in enumerate(opts):
             sheet = self.sheets[k]
-            self.lib.append([])
             for i in range(1, sheet.nrows):
                 row_dict = {}
                 for j, item in enumerate(sheet.row_values(i)):
                     row_dict[opts[k][j]] = item
-                self.lib[k].append(row_dict)
+                self.lib.append(row_dict)
 
     def __replace(self, text):
-        return re.sub(r'[（(）),.，。、\s\t\0\r\n]', '', text)
+        text = re.sub(r'\（.+?\）', '', text)
+        text = re.sub(r'[（(）),.，。、\s\t\0\r\n]', '', text)
+        return text
 
-    def search(self, quiz_index, quiz_text):
+    def search(self, quiz_text):
         quiz_text = self.__replace(quiz_text)
-        for k, item in enumerate(self.lib[quiz_index]):
-            if quiz_text == self.__replace(item['text']):
-                return item['key']
+        print('quiz_text:',quiz_text)
+        for k, item in enumerate(self.lib):
+            topic = self.__replace(item['topic'])
+            if quiz_text == topic:
+                ans = item['ans']
+                try:
+                    ans = int(ans)
+                    binary = str(bin(ans))
+                    ans = ''
+                    for i, opt in enumerate(opt_const):
+                        if binary[-i] == '1':
+                            ans += opt
+                finally:
+                    return ans
         return []

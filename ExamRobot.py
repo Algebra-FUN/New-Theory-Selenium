@@ -39,9 +39,7 @@ class ExamRobot:
                 text = quiz.find_element_by_css_selector('p').text
                 quiz_text = re.search(r'\d+\.(.+)', text).group(1)
                 inputs = quiz.find_elements_by_css_selector('input')
-                quiz_index = 0 if inputs[0].get_attribute(
-                    'type') == 'radio' else 1
-                keys = self.lib_sheet.search(quiz_index, quiz_text)
+                keys = self.lib_sheet.search(quiz_text)
                 for ainput in inputs:
                     if ainput.get_attribute('value') in keys:
                         self.__choice_option(ainput)

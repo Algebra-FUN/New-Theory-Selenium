@@ -1,4 +1,5 @@
 from selenium import webdriver
+
 from LibSheet import LibSheet
 from ExamRobot import ExamRobot
 import re
@@ -43,8 +44,7 @@ def show_help():
     --test          Fill questions for test prupose
   quit    Quit this program
   search  Search a question
-    --radio <question>     Search a radio question
-    --checkbox <question>  Search a checkbox question
+    --all <question>
   reset   Reset setting
     --sheet_path <path>    Reset path of excel file temporarily
     --website_url <url>    Reset url of target website''')
@@ -75,13 +75,7 @@ def lines():
         else:
             print('undefined option')
     elif command == 'search':
-        if option == 'radio' or option == 'checkbox':
-            if param != '':
-                print(lib_sheet.search(0 if option == 'radio' else 1, param))
-            else:
-                print('param unset')
-        else:
-            print('undefined option')
+        print(lib_sheet.search(param))
     elif command == 'fill':
         if option == 'captcha':
             robot.fill_captcha()
