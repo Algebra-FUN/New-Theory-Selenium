@@ -2,7 +2,8 @@
 debug.log
 test.py
 *xls*
-./venv
+venv
+.idea
 .vscode
 customer.txt
 finished.txt
