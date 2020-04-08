@@ -1,7 +1,7 @@
 import xlrd
 import re
 
-opt_const = 'FEDCBA'
+opt_const = 'ABCDEF'
 
 opts = [
     ['topic', 'A', 'B', 'C', 'D', 'E', 'F', 'ans'],
@@ -39,18 +39,17 @@ class LibSheet:
 
     def search(self, quiz_text):
         quiz_text = self.__replace(quiz_text)
-        print('quiz_text:',quiz_text)
         for k, item in enumerate(self.lib):
             topic = self.__replace(item['topic'])
             if quiz_text == topic:
                 ans = item['ans']
                 try:
                     ans = int(ans)
-                    binary = str(bin(ans))
+                    binary = str(bin(ans))[2:][::-1]
                     ans = ''
-                    for i, opt in enumerate(opt_const):
-                        if binary[-i] == '1':
-                            ans += opt
+                    for i, v in enumerate(binary):
+                        if v == '1':
+                            ans += opt_const[i]
                 finally:
                     return ans
         return []
