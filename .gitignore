@@ -1,6 +1,5 @@
-/__pycache__
+__pycache__
 debug.log
 test.py
-38.xls
-39.xlsx
+*.xls*
 .vscode

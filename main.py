@@ -1,29 +1,37 @@
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium import webdriver
-
-from LibSheet import LibSheet
-from ExamRobot import ExamRobot
 import re
 import configparser as cp
-
-# default config
-website_url = 'localhost:8000'
-excel_path = './lib_sheet.xls'
-print('program is launching ...')
+from util import *
+from selenium.webdriver import Proxy
 
 # read user-config from ini
 config = cp.ConfigParser()
-config.read('config.ini')
+config.read('data/config.ini')
 
 website_url = config.get('website', 'url')
 excel_path = config.get('excel', 'path')
+proxy_pool_url = config.get('proxy-pool','url')
 print('website_url', website_url)
 print('sheet_path', excel_path)
 
+# set proxy
+proxy = get_proxy_ip(proxy_pool_url)
+settings = {
+    "httpProxy": proxy,
+    "sslProxy": proxy
+}
+proxy = Proxy(settings)
+cap = DesiredCapabilities.CHROME.copy()
+cap['platform'] = "WINDOWS"
+cap['version'] = "10"
+proxy.add_to_capabilities(cap)
+print('proxy_ip',proxy)
+
 # load main unit
-browser = webdriver.Chrome()
+browser = webdriver.Chrome(desired_capabilities=cap)
 lib_sheet = LibSheet(excel_path)
 robot = ExamRobot(lib_sheet, browser)
-
 
 def go(url):
     try:
@@ -99,7 +107,6 @@ def lines():
 # main process
 #  launch
 go(website_url)
-browser.execute_script('window.hideMask()')
 browser.maximize_window()
 show_help()
 while lines():
