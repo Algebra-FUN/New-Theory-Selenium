@@ -1,18 +1,12 @@
 from selenium import webdriver
 
-from LibSheet import LibSheet
-from ExamRobot import ExamRobot
+from util import *
 import re
 import configparser as cp
 
-# default config
-website_url = 'localhost:8000'
-excel_path = './lib_sheet.xls'
-print('program is launching ...')
-
 # read user-config from ini
 config = cp.ConfigParser()
-config.read('config.ini')
+config.read('data/config.ini')
 
 website_url = config.get('website', 'url')
 excel_path = config.get('excel', 'path')
