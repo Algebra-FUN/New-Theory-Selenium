@@ -17,6 +17,7 @@ print('sheet_path', excel_path)
 
 # set proxy
 proxy = get_proxy_ip(proxy_pool_url)
+print('proxy_ip',proxy)
 settings = {
     "httpProxy": proxy,
     "sslProxy": proxy
@@ -26,7 +27,6 @@ cap = DesiredCapabilities.CHROME.copy()
 cap['platform'] = "WINDOWS"
 cap['version'] = "10"
 proxy.add_to_capabilities(cap)
-print('proxy_ip',proxy)
 
 # load main unit
 browser = webdriver.Chrome(desired_capabilities=cap)
@@ -107,7 +107,6 @@ def lines():
 # main process
 #  launch
 go(website_url)
-browser.maximize_window()
 show_help()
 while lines():
     pass
