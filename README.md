@@ -9,76 +9,28 @@
 
 python3 version>=3.5 
 
-### 安装依赖
+### 配置并运行
 
-> 请同时安装python2&python3的用户，使用pip3,python3代替下面命令
+1. clone本项目源码
 
-##### STEP 0: clone本项目源码
+2. 安装模组
 
-##### STEP 1: 安装模组
+    通过命令行
+    ```shell
+    pip install selenium xlrd
+    ```
 
-通过命令行
-```shell
-pip install selenium
-pip install xlrd
-```
-或点击“install.bat”
+3. 安装webdriver
 
-##### STEP 2: 安装webdriver
+    下载chromedriver.exe,存放在Python目录下
+    
+	> ChromeDriver下载地址：https://npm.taobao.org/mirrors/chromedriver/
+	> 也可以按照的主流网络教程进行安装在Chrome目录下
 
-下载chromedriver.exe,存放在Python目录下
-> 也可以按照的主流网络教程进行安装在Chrome目录下
 
-##### STEP 3: 启动
+4. 运行使用
 
-通过命令行
-```shell
-python main.py
-```
-或点击“launch.bat”直接启动
-
-### 配置
-#### 使用非Chrome,配置webdriver
-在 main.py 文件中可根据需求 自行修改代码
-```python
-# 可根据需求更换webdriver,如IE,Edge,Firefox等
-browser = webdriver.Chrome()
-```
-#### 资源初始配置
-##### 通过 config.ini
-在 config.ini 文件中 直接配置
-```ini
-[website]
-# 测试目标网站URL
-url = localhost:8000
-[excel]
-# 测试用例Excel文件PATH
-path = ./lib_sheet.xls
-```
-##### 通过 内置command
-```shell
-reset --website_url <url>
-reset --sheet_path <path>
-```
-
-### 开始使用
-
-##### 填充
-
-```shell
-fill --questions
-```
-
-### 常见问题
-
-##### Excel文件路径
-
-excel_path是相对于main.py的启动路径
-可以通过reset命令更换excel源文件
-
-```shell
-reset --sheet_path <path_to_excel>
-```
+    按照指示执行 ITheory.ipynb 即可
 
 ## 免责声明
 
