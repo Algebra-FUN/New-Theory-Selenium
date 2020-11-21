@@ -35,7 +35,8 @@ class ExamRobot:
             quizs = self.browser.find_elements_by_css_selector(
                 '.exam-content-quiz')
             for quiz in quizs:
-                time.sleep(randint(10,20))
+                # time.sleep(randint(10,20))
+                time.sleep(1)
                 text = quiz.find_element_by_css_selector('p').text
                 quiz_text = re.search(r'\d+\.(.+)', text).group(1)
                 inputs = quiz.find_elements_by_css_selector('input')
