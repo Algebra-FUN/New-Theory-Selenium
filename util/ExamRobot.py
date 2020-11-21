@@ -1,11 +1,15 @@
 import re
 from random import choice, shuffle, randint
-import time
+from time import sleep
 
 class ExamRobot:
     def __init__(self, lib_sheet, browser):
         self.lib_sheet = lib_sheet
         self.browser = browser
+        self.setTimer()
+
+    def setTimer(self,timer=lambda: randint(5,10)):
+        self.timer = timer
 
     def __choice_option(self, target):
         self.browser.execute_script(
@@ -36,7 +40,7 @@ class ExamRobot:
                 '.exam-content-quiz')
             for quiz in quizs:
                 # time.sleep(randint(10,20))
-                time.sleep(1)
+                sleep(self.timer())
                 text = quiz.find_element_by_css_selector('p').text
                 quiz_text = re.search(r'\d+\.(.+)', text).group(1)
                 inputs = quiz.find_elements_by_css_selector('input')
@@ -45,7 +49,7 @@ class ExamRobot:
                     if ainput.get_attribute('value') in keys:
                         self.__choice_option(ainput)
                 print(text)
-                print(keys)
+                print(f'答案：{keys}')
         except Exception as e:
             print(e)
             print('questions fill exception')
