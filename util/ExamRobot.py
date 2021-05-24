@@ -35,20 +35,20 @@ class ExamRobot:
 
     def fill_questions(self, option):
         try:
-            score = 0
             quizs = self.browser.find_elements_by_css_selector(
-                '.exam-content-quiz')
+                'article')
             for quiz in quizs:
                 # time.sleep(randint(10,20))
                 sleep(self.timer())
-                text = quiz.find_element_by_css_selector('p').text
-                quiz_text = re.search(r'\d+\.(.+)', text).group(1)
+                text = quiz.find_element_by_css_selector('div:first-child').text
+                quiz_text = re.search(r'\d+\、（.+?）(.+)', text).group(1)
                 inputs = quiz.find_elements_by_css_selector('input')
                 keys = self.lib_sheet.search(quiz_text)
                 for ainput in inputs:
                     if ainput.get_attribute('value') in keys:
                         self.__choice_option(ainput)
                 print(text)
+                print(quiz_text)
                 print(f'答案：{keys}')
         except Exception as e:
             print(e)
